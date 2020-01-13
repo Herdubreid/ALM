@@ -1,0 +1,81 @@
+﻿@inherits BlazorStateComponent
+
+<div class="card shadow m-2">
+    <h5 class="card-header">@Row.z_APID_378 - @Row.z_DL01_358 (@Row.z_NUMB_377)</h5>
+    <div class="card-body">
+        @if (Row.Locations != null)
+        {
+            DateTime? last = null;
+            foreach (var l in Row.Locations)
+            {
+                TimeSpan? duration = last == null
+                    ? (TimeSpan?)null
+                    : l.timestamp - last;
+                <div class="row">
+                    <div class="col">
+                        @l.formattedAddress
+                    </div>
+                </div>
+                <div class="row small">
+                    <div class="col-auto">
+                        @(l.timestamp.HasValue ? l.timestamp.Value.ToString("ddd dd, HH:mm") : "N/A")
+                    </div>
+                    <div class="col-auto">
+                        @(duration.HasValue ? "(" + duration.Value.ToString(@"hh\:mm") + ")" : "")
+                    </div>
+                    <div class="col-auto">
+                        @(l.distance.HasValue ? l.distance.Value.ToString("f1") : "N/A ")km
+                    </div>
+                </div>
+                last = l.timestamp;
+            }
+        }
+        else
+        {
+            <div class="row align-items-center justify-content-center">
+                <div class="col-auto">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <em> Fetching Addresses...</em>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="row justify-content-between">
+            <button class="col-4 btn btn-primary" disabled="@(Locating || Loading)" @onclick="@SetLocation">
+                <i class="@(Locating ? "fas fa-spinner fa-spin" : "fas fa-map-pin")"></i>
+            </button>
+            <button class="col-4 btn btn-success" disabled="@(Locating || Loading)" @onclick="@Refresh">
+                <i class="fas fa-spinner @(Loading ? "fa-spin" : "")"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public W1701A.Row Row { get; set; }
+    bool Locating { get; set; }
+    bool Loading { get; set; }
+    async Task Refresh()
+    {
+        Loading = true;
+        await Mediator.Send(new AppState.GetTextAction { NUMB = Row.z_NUMB_377.ToString() });
+        Loading = false;
+    }
+    async Task SetLocation()
+    {
+        Locating = true;
+        await Mediator.Send(new AppState.AddTextAction { NUMB = Row.z_NUMB_377 });
+        Loading = true;
+        Locating = false;
+        await Mediator.Send(new AppState.GetTextAction { NUMB = Row.z_NUMB_377.ToString() });
+        Loading = false;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        Loading = true;
+        await Mediator.Send(new AppState.GetTextAction { NUMB = Row.z_NUMB_377.ToString() });
+        Loading = false;
+    }
+}

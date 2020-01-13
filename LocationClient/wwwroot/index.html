@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LocationClient</title>
+    <base href="/" />
+    <link href="fontawsome/css/all.css" rel="stylesheet" />
+    <script src="main.js"></script>
+    <script src="_content/Blazor-State/blazorstate.js"></script>
+    <script src="/ServiceWorkerRegister.js"></script>
+    <!-- Bing Maps -->
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol'></script>
+    <link href="/manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+</head>
+
+<body>
+    <app>
+        <div class="row align-items-center justify-content-center m-0" style="height:100vh">
+            <div class="col-auto">
+                <i class="fas fa-spinner fa-spin"></i>
+                <em> Loading...</em>
+            </div>
+        </div>
+    </app>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

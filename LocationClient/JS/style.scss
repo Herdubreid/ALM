@@ -1,0 +1,34 @@
+﻿
+@import './variables';
+@import '~bootstrap/scss/bootstrap';
+@import './bootswatch';
+
+.main {
+    margin-top: 56px;
+    overflow: auto;
+}
+.message-box {
+    position: fixed;
+    top: 120px;
+    right: 30px;
+    opacity: .8;
+    z-index: 2;
+}
+.w-300px {
+    width: 300px;
+}
+.w-350px {
+    width: 350px;
+}
+.w-400px {
+    width: 400px;
+}
+.mw-300px {
+    max-width: 300px;
+}
+.mw-350px {
+    max-width: 350px;
+}
+.mw-400px {
+    max-width: 400px;
+}

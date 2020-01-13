@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TestALM": {
+      "commandName": "Project",
+      "commandLineArgs": "azta get 1001"
+    }
+  }
+}

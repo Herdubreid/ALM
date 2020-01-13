@@ -1,0 +1,68 @@
+﻿@page "/"
+@inherits BlazorStateComponent
+@inject LocationService Location
+
+<div class="card shadow m-2">
+    <h5 class="card-header m-2">Location</h5>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col">
+                @if (State.Address != null)
+                {
+                    <span>@State.Address.formattedAddress</span>
+                }
+                else
+                {
+                    <em> Getting Current Location</em>
+                }
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-success" disabled="@(State.Address == null)" @onclick="@(() => Location.LoadMap())">
+                    <i class="@(State.Address == null ? "fas fa-spinner fa-spin" : "fas fa-location-arrow")"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-columns">
+    @if (State.EQList != null)
+    {
+        foreach (var r in State.EQList)
+        {
+            <EquipmentCard Row="@r"></EquipmentCard>
+        }
+    }
+</div>
+<div class="row">
+    <div class="col text-danger">
+        @State.ErrorMessage
+    </div>
+</div>
+<div id="map" hidden></div>
+
+@code
+{
+    AppState State => Store.GetState<AppState>();
+    void Update(object sender, EventArgs args) => InvokeAsync(StateHasChanged);
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Location.LoadMap();
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await Mediator.Send(new AppState.EQListAction());
+    }
+    protected override void OnInitialized()
+    {
+        State.Changed += Update;
+    }
+    public new void Dispose()
+    {
+        State.Changed -= Update;
+        base.Dispose();
+    }
+}
