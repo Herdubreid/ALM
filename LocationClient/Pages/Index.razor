@@ -23,7 +23,7 @@
             <div class="col-auto">
                 <button class="btn btn-success"
                         disabled="@(State.Address == null && string.IsNullOrEmpty(State.LocationErrorMessage))"
-                        @onclick="@(() => Location.LoadMap())">
+                        @onclick="@(() => Location.LoadCoords())">
                     <i class="@(State.Address == null && string.IsNullOrEmpty(State.LocationErrorMessage) ? "fas fa-spinner fa-spin" : "fas fa-location-arrow")"></i>
                 </button>
             </div>
@@ -55,7 +55,7 @@
     {
         if (firstRender)
         {
-            Location.LoadMap();
+            Location.LoadCoords();
         }
     }
     protected override async Task OnInitializedAsync()

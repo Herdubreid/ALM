@@ -27,6 +27,25 @@ const Location = (center, dotNet) => window.BingSearch.reverseGeocode({
     }
 });
 
+window.GeoLocation = (dotNet: DotNet) => {
+    console.log('Get GeoLocation');
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                dotNet.invokeMethodAsync("GeoLocation", {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                });
+                console.log('Coords: ', position.coords);
+            },
+            err => {
+                console.log(err);
+                dotNet.invokeMethodAsync('Error', err.message);
+            }
+        );
+    }
+}
+
 window.LoadMap = (bingKey: string, dotNet: DotNet) => {
     console.log('Geolocation');
     if (navigator.geolocation && navigator.onLine) {

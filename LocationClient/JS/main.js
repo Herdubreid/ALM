@@ -32,6 +32,21 @@ var Location = function (center, dotNet) { return window.BingSearch.reverseGeoco
         dotNet.invokeMethodAsync('Error', err);
     }
 }); };
+window.GeoLocation = function (dotNet) {
+    console.log('Get GeoLocation');
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            dotNet.invokeMethodAsync("GeoLocation", {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            });
+            console.log('Coords: ', position.coords);
+        }, function (err) {
+            console.log(err);
+            dotNet.invokeMethodAsync('Error', err.message);
+        });
+    }
+};
 window.LoadMap = function (bingKey, dotNet) {
     console.log('Geolocation');
     if (navigator.geolocation && navigator.onLine) {

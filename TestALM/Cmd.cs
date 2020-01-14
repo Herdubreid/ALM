@@ -1,4 +1,5 @@
-﻿using BlazorState;
+﻿using BingMapsRESTToolkit;
+using BlazorState;
 using Celin;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
@@ -32,11 +33,51 @@ namespace Test
         public string name { get; set; }
         public string text { get; set; }
     }
+    [Subcommand(typeof(BingMap))]
     [Subcommand(typeof(AzureTextAttachmentCmd))]
     [Subcommand(typeof(TextAttachmentCmd))]
     [Subcommand(typeof(EQListCmd))]
     class Cmd
     {
+        [Command("address", Description = "Reverse Geocode")]
+        class BingMap
+        {
+            [Option("-s", CommandOptionType.NoValue, Description = "South Latitude")]
+            bool South { get; set; }
+            [Argument(0, Description = "Latitude")]
+            [Required]
+            double Latitude { get; set; }
+            [Argument(1, Description = "Longitude")]
+            [Required]
+            double Longitude { get; set; }
+            async Task OnExecuteAsync()
+            {
+                Console.WriteLine("{0}, {1}", Latitude, Longitude);
+                ReverseGeocodeRequest rq = new ReverseGeocodeRequest
+                {
+                    BingMapsKey = "AmvRew_WUlWMYhAxgFXNTg9htdkTNc4N_reyiMtIZSZgOTAjuKWKzhrV-H6rjOgw"
+                };
+                double lat = South ? Latitude * -1 : Latitude;
+                rq.Point = new Coordinate(lat, Longitude);
+                var response = await rq.Execute();
+                if (response.StatusCode == 200)
+                {
+                    Console.WriteLine("Success:");
+                    foreach (var rs in response.ResourceSets)
+                    {
+                        foreach (var r in rs.Resources)
+                        {
+                            var loc = r as Location;
+                            Console.WriteLine(loc.Address.FormattedAddress);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusDescription);
+                }
+            }
+        }
         [Command("azta", Description = "Azure Text Attachments")]
         [Subcommand(typeof(Add))]
         [Subcommand(typeof(Get))]

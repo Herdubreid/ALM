@@ -2,7 +2,7 @@
   "profiles": {
     "TestALM": {
       "commandName": "Project",
-      "commandLineArgs": "azta get 1001"
+      "commandLineArgs": "address -s 32.0765952 115.84061439999999 "
     }
   }
 }
