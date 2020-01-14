@@ -14,7 +14,8 @@ namespace Celin
         }
         public class ErrorAction : IAction
         {
-            public string ErrorMessage { get; set; }
+            public string AzureErrorMessage { get; set; }
+            public string LocationErrorMessage { get; set; }
         }
         public class AddressAction : IAction
         {

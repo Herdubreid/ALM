@@ -34,7 +34,7 @@ var Location = function (center, dotNet) { return window.BingSearch.reverseGeoco
 }); };
 window.LoadMap = function (bingKey, dotNet) {
     console.log('Geolocation');
-    if (navigator.geolocation) {
+    if (navigator.geolocation && navigator.onLine) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var center = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
             console.log('Coordinates: ', position);
@@ -58,7 +58,13 @@ window.LoadMap = function (bingKey, dotNet) {
         });
     }
     else {
-        var err = 'Geolocation not supported by this browser!';
+        var err = void 0;
+        if (!navigator.onLine) {
+            err = 'Not connected to the internet!';
+        }
+        else {
+            err = 'Geolocation not supported by this browser!';
+        }
         console.error(err);
         dotNet.invokeMethodAsync('Error', err);
     }

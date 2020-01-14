@@ -11,14 +11,20 @@
                 {
                     <span>@State.Address.formattedAddress</span>
                 }
+                else if (!string.IsNullOrEmpty(State.LocationErrorMessage))
+                {
+                    <span>@State.LocationErrorMessage</span>
+                }
                 else
                 {
                     <em> Getting Current Location</em>
                 }
             </div>
             <div class="col-auto">
-                <button class="btn btn-success" disabled="@(State.Address == null)" @onclick="@(() => Location.LoadMap())">
-                    <i class="@(State.Address == null ? "fas fa-spinner fa-spin" : "fas fa-location-arrow")"></i>
+                <button class="btn btn-success"
+                        disabled="@(State.Address == null && string.IsNullOrEmpty(State.LocationErrorMessage))"
+                        @onclick="@(() => Location.LoadMap())">
+                    <i class="@(State.Address == null && string.IsNullOrEmpty(State.LocationErrorMessage) ? "fas fa-spinner fa-spin" : "fas fa-location-arrow")"></i>
                 </button>
             </div>
         </div>
@@ -36,7 +42,7 @@
 </div>
 <div class="row">
     <div class="col text-danger">
-        @State.ErrorMessage
+        @State.AzureErrorMessage
     </div>
 </div>
 <div id="map" hidden></div>

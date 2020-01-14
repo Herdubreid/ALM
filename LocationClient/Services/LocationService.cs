@@ -35,7 +35,7 @@ namespace Celin
         [JSInvokable]
         public void Error(string error)
         {
-            Mediator.Send(new AppState.ErrorAction { ErrorMessage = error });
+            Mediator.Send(new AppState.ErrorAction { LocationErrorMessage = error });
         }
         public void LoadMap()
         {

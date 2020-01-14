@@ -46,7 +46,7 @@
                 <i class="@(Locating ? "fas fa-spinner fa-spin" : "fas fa-map-pin")"></i>
             </button>
             <button class="col-4 btn btn-success" disabled="@(Locating || Loading)" @onclick="@Refresh">
-                <i class="fas fa-spinner @(Loading ? "fa-spin" : "")"></i>
+                <i class="fas fa-sync @(Loading ? "fa-spin" : "")"></i>
             </button>
         </div>
     </div>

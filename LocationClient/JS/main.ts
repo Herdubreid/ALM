@@ -29,7 +29,7 @@ const Location = (center, dotNet) => window.BingSearch.reverseGeocode({
 
 window.LoadMap = (bingKey: string, dotNet: DotNet) => {
     console.log('Geolocation');
-    if (navigator.geolocation) {
+    if (navigator.geolocation && navigator.onLine) {
         navigator.geolocation.getCurrentPosition(
             position => {
                 const center = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
@@ -54,7 +54,12 @@ window.LoadMap = (bingKey: string, dotNet: DotNet) => {
             }
         );
     } else {
-        const err = 'Geolocation not supported by this browser!';
+        let err;
+        if (!navigator.onLine) {
+            err = 'Not connected to the internet!';
+        } else {
+            err = 'Geolocation not supported by this browser!';
+        }
         console.error(err);
         dotNet.invokeMethodAsync('Error', err);
     }

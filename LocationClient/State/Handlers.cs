@@ -55,7 +55,11 @@ namespace Celin
             AppState State => Store.GetState<AppState>();
             public override Task<Unit> Handle(ErrorAction aAction, CancellationToken aCancellationToken)
             {
-                State.ErrorMessage = aAction.ErrorMessage;
+                State.AzureErrorMessage = aAction.AzureErrorMessage;
+                State.LocationErrorMessage = aAction.LocationErrorMessage;
+
+                var handler = State.Changed;
+                handler?.Invoke(State, null);
 
                 return Unit.Task;
             }
@@ -68,6 +72,7 @@ namespace Celin
             {
                 State.Address = aAction.Address;
                 State.Address.timestamp = DateTime.Now;
+                State.LocationErrorMessage = string.Empty;
 
                 var handler = State.Changed;
                 handler?.Invoke(this, null);

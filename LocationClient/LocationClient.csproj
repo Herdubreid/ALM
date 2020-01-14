@@ -7,7 +7,7 @@
     <ServiceWorkerForce>true</ServiceWorkerForce>
     <ManifestShortName>Location</ManifestShortName>
     <ManifestLongName>Assign Location</ManifestLongName>
-    <ServiceWorkerCacheVersion>4</ServiceWorkerCacheVersion>
+    <ServiceWorkerCacheVersion>6</ServiceWorkerCacheVersion>
   </PropertyGroup>
 
   <ItemGroup>
