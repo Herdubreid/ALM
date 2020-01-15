@@ -52,17 +52,25 @@ namespace Celin
             collection.Add("latitude", coordinate.latitude.ToString());
             collection.Add("longitude", coordinate.longitude.ToString());
             uri.Query = collection.ToString();
-            var response = await Http.GetAsync(uri.Uri);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var address = JsonSerializer.Deserialize<Address>(response.Content.ReadAsStringAsync().Result);
-                address.latitude = coordinate.latitude;
-                address.longitude = coordinate.longitude;
-                await Mediator.Send(new AppState.AddressAction { Address = address });
+                var response = await Http.GetAsync(uri.Uri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var address = JsonSerializer.Deserialize<Address>(response.Content.ReadAsStringAsync().Result);
+                    address.latitude = coordinate.latitude;
+                    address.longitude = coordinate.longitude;
+                    await Mediator.Send(new AppState.AddressAction { Address = address });
+                }
+                else
+                {
+                    await Mediator.Send(new AppState.ErrorAction { LocationErrorMessage = response.Content.ReadAsStringAsync().Result });
+                }
             }
-            else
+            catch (Exception e)
             {
-                await Mediator.Send(new AppState.ErrorAction { LocationErrorMessage = response.Content.ReadAsStringAsync().Result });
+                await Mediator.Send(new AppState.ErrorAction { LocationErrorMessage = e.Message });
             }
         }
         public void LoadCoords()

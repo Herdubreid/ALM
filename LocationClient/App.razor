@@ -1,4 +1,6 @@
-﻿
+﻿@inject BlazorState.Features.JavaScriptInterop.JsonRequestHandler JsonRequestHandler
+@inject BlazorState.Pipeline.ReduxDevTools.ReduxDevToolsInterop ReduxDevToolsInterop
+
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -19,8 +21,6 @@
         if (firstRender)
         {
 #if DEBUG
-@inject BlazorState.Features.JavaScriptInterop.JsonRequestHandler JsonRequestHandler
-@inject BlazorState.Pipeline.ReduxDevTools.ReduxDevToolsInterop ReduxDevToolsInterop
             await ReduxDevToolsInterop.InitAsync();
             await JsonRequestHandler.InitAsync();
 #endif

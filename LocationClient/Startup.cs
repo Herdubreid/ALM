@@ -1,5 +1,6 @@
 using Blazor.Extensions.Storage;
 using Blazored.Localisation;
+using Blazored.Toast;
 using BlazorState;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ namespace Celin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBlazoredLocalisation();
+            services.AddBlazoredToast();
             services.AddStorage();
             services.AddBlazorState(
                 (options) =>

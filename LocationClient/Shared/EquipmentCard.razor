@@ -42,7 +42,7 @@
     </div>
     <div class="card-footer">
         <div class="row justify-content-between">
-            <button class="col-4 btn btn-primary" disabled="@(Locating || Loading)" @onclick="@SetLocation">
+            <button class="col-4 btn btn-primary" disabled="@((State.Address == null) || Locating || Loading)" @onclick="@SetLocation">
                 <i class="@(Locating ? "fas fa-spinner fa-spin" : "fas fa-map-pin")"></i>
             </button>
             <button class="col-4 btn btn-success" disabled="@(Locating || Loading)" @onclick="@Refresh">
@@ -55,6 +55,7 @@
 @code {
     [Parameter]
     public W1701A.Row Row { get; set; }
+    AppState State => Store.GetState<AppState>();
     bool Locating { get; set; }
     bool Loading { get; set; }
     async Task Refresh()

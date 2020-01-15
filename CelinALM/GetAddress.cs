@@ -21,9 +21,10 @@ namespace Celin
             string slon = req.Query["longitude"];
             if (double.TryParse(slat, out var lat) && double.TryParse(slon, out var lon))
             {
-                ReverseGeocodeRequest rq = new ReverseGeocodeRequest();
-                rq.BingMapsKey = "AmvRew_WUlWMYhAxgFXNTg9htdkTNc4N_reyiMtIZSZgOTAjuKWKzhrV-H6rjOgw";
-                rq.Point = new Coordinate(lat, lon);
+                ReverseGeocodeRequest rq = new ReverseGeocodeRequest
+                {
+                    Point = new Coordinate(lat, lon)
+                };
                 var response = await rq.Execute();
                 if (response.StatusCode == 200)
                 {

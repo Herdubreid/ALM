@@ -1,4 +1,5 @@
-﻿using BlazorState;
+﻿using Blazored.Toast.Services;
+using BlazorState;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Celin
         static readonly string NAME = "io-celin-client-location";
         public class AddTextHandler : ActionHandler<AddTextAction>
         {
+            IToastService Toast { get; }
             HttpClient Http { get; }
             AppState State => Store.GetState<AppState>();
             public override async Task<Unit> Handle(AddTextAction aAction, CancellationToken aCancellationToken)
@@ -38,32 +40,47 @@ namespace Celin
                     collection.Add("seq", row.LocationTextSeq.ToString());
                     uri.Query = collection.ToString();
                 }
-                var response = await Http.GetAsync(uri.Uri);
 
-                var handler = State.Changed;
-                handler?.Invoke(State, null);
+                try
+                {
+                    await Http.GetAsync(uri.Uri);
+                }
+                catch (Exception e)
+                {
+                    Toast.ShowError(e.Message);
+                }
 
                 return Unit.Value;
             }
-            public AddTextHandler(IStore store, HttpClient http) : base(store)
+            public AddTextHandler(IStore store, HttpClient http, IToastService toast) : base(store)
             {
+                Toast = toast;
                 Http = http;
             }
         }
         public class ErrorHandler : ActionHandler<ErrorAction>
         {
+            IToastService Toast { get; }
             AppState State => Store.GetState<AppState>();
             public override Task<Unit> Handle(ErrorAction aAction, CancellationToken aCancellationToken)
             {
                 State.AzureErrorMessage = aAction.AzureErrorMessage;
                 State.LocationErrorMessage = aAction.LocationErrorMessage;
 
+                if (!string.IsNullOrEmpty(State.AzureErrorMessage))
+                {
+                    Toast.ShowError(State.AzureErrorMessage);
+                }
+
                 var handler = State.Changed;
                 handler?.Invoke(State, null);
 
                 return Unit.Task;
             }
-            public ErrorHandler(IStore store) : base(store) { }
+            public ErrorHandler(IStore store, IToastService toast) : base(store)
+            {
+                Toast = toast;
+            }
         }
         public class AddressHandler : ActionHandler<AddressAction>
         {
@@ -88,7 +105,7 @@ namespace Celin
                 public int sequence { get; set; }
                 public IEnumerable<Address> adds { get; set; }
             }
-
+            IToastService Toast { get; }
             HttpClient Http { get; }
             AppState State => Store.GetState<AppState>();
             public override async Task<Unit> Handle(GetTextAction aAction, CancellationToken aCancellationToken)
@@ -97,8 +114,17 @@ namespace Celin
                 var collection = System.Web.HttpUtility.ParseQueryString(string.Empty);
                 collection.Add("code", "x8MfDXaLAsUE/GUs9kF2qOEJ60WaR2tMCBkD9XX7R5hgfmuoL9Oiag==");
                 collection.Add("numb", aAction.NUMB);
+                HttpResponseMessage response = null;
                 uri.Query = collection.ToString();
-                var response = await Http.GetAsync(uri.Uri);
+                try
+                {
+                    response = await Http.GetAsync(uri.Uri);
+                }
+                catch (Exception e)
+                {
+                    Toast.ShowError(e.Message);
+                    return Unit.Value;
+                }
                 if (response.IsSuccessStatusCode)
                 {
                     var row = State.EQList.First(r => r.z_NUMB_377.ToString().Equals(aAction.NUMB));
@@ -116,13 +142,15 @@ namespace Celin
 
                 return Unit.Value;
             }
-            public GetTextHandler(IStore store, HttpClient http) : base(store)
+            public GetTextHandler(IStore store, HttpClient http, IToastService toast) : base(store)
             {
+                Toast = toast;
                 Http = http;
             }
         }
         public class EQListHandler : ActionHandler<EQListAction>
         {
+            IToastService Toast { get; }
             HttpClient Http { get; }
             AppState State => Store.GetState<AppState>();
             public override async Task<Unit> Handle(EQListAction aAction, CancellationToken aCancellationToken)
@@ -131,16 +159,24 @@ namespace Celin
                 var collection = System.Web.HttpUtility.ParseQueryString(string.Empty);
                 collection.Add("code", "3Uys2020MB0Y2QncCaXtscAecTSgZ6IjVci/0WHsVCYCOG/Maaebaw==");
                 uri.Query = collection.ToString();
-                var response = await Http.GetAsync(uri.Uri);
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    State.EQList = JsonSerializer.Deserialize<IEnumerable<Celin.W1701A.Row>>(response.Content.ReadAsStringAsync().Result);
+                    var response = await Http.GetAsync(uri.Uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        State.EQList = JsonSerializer.Deserialize<IEnumerable<Celin.W1701A.Row>>(response.Content.ReadAsStringAsync().Result);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Toast.ShowError(e.Message);
                 }
 
                 return Unit.Value;
             }
-            public EQListHandler(IStore store, HttpClient http) : base(store)
+            public EQListHandler(IStore store, HttpClient http, IToastService toast) : base(store)
             {
+                Toast = toast;
                 Http = http;
             }
         }
