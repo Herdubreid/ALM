@@ -1,0 +1,15 @@
+﻿@page "/"
+@inject JsService  JS
+
+<div id="map" class="row m-0 align-items-center justify-content-center">
+</div>
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JS.LoadMap("map");
+        }
+    }
+}

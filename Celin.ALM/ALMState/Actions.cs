@@ -4,6 +4,10 @@ namespace Celin
 {
     public partial class ALMState
     {
+        public class RefreshLocationAction : IAction
+        {
+            public int NUMB { get; set; }
+        }
         public class TextAttachmentAction : IAction
         {
             public enum Types

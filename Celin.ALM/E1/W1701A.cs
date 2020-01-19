@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Celin.W1701A
 {
     public class Row
     {
+        public List<Address> Locations { get; set; }
         public string z_PRODM_362 { get; set; }
         public DateTime z_JCD_376 { get; set; }
         public string z_ACL8_372 { get; set; }

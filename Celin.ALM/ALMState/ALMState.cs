@@ -9,7 +9,7 @@ namespace Celin
         public event EventHandler Changed;
         public string ErrorMessage { get; set; }
         public IEnumerable<AIS.AttachmentResponse> TextAttachments { get; set; }
-        public W1701A.Response EQList { get; set; }
+        public IEnumerable<W1701A.Row> EQList { get; set; }
         public override void Initialize() { }
     }
 }

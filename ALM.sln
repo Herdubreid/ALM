@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CelinALM", "CelinALM\CelinA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocationClient", "LocationClient\LocationClient.csproj", "{6C67C473-B276-4BF6-804C-D5393BC3B2E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationServer", "LocationServer\LocationServer.csproj", "{A935B763-F5C6-4B00-96E1-66F5F3138B9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6C67C473-B276-4BF6-804C-D5393BC3B2E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C67C473-B276-4BF6-804C-D5393BC3B2E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C67C473-B276-4BF6-804C-D5393BC3B2E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A935B763-F5C6-4B00-96E1-66F5F3138B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A935B763-F5C6-4B00-96E1-66F5F3138B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A935B763-F5C6-4B00-96E1-66F5F3138B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A935B763-F5C6-4B00-96E1-66F5F3138B9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,8 +42,16 @@ namespace Test
         [Command("address", Description = "Reverse Geocode")]
         class BingMap
         {
+            static readonly string NAME = "io-celin-client-location";
+            Celin.AIS.Server E1 { get; }
             [Option("-s", CommandOptionType.NoValue, Description = "South Latitude")]
             bool South { get; set; }
+            [Option("-w", CommandOptionType.NoValue, Description = "West Longitude")]
+            bool West { get; set; }
+            [Option("-n", CommandOptionType.SingleValue, Description = "Add to Attacment Number")]
+            int? Sequence { get; set; }
+            [Option("-e", CommandOptionType.SingleValue, Description = "Equipment Number")]
+            int? Numb { get; set; }
             [Argument(0, Description = "Latitude")]
             [Required]
             double Latitude { get; set; }
@@ -52,23 +60,55 @@ namespace Test
             double Longitude { get; set; }
             async Task OnExecuteAsync()
             {
-                Console.WriteLine("{0}, {1}", Latitude, Longitude);
                 ReverseGeocodeRequest rq = new ReverseGeocodeRequest
                 {
-                    BingMapsKey = "AmvRew_WUlWMYhAxgFXNTg9htdkTNc4N_reyiMtIZSZgOTAjuKWKzhrV-H6rjOgw"
+                    BingMapsKey = "AgKOa2W4-xmxbCSbRaMPi-6yY_9jNir8FxfuxqXhyT8yBub74AQZ2nk5kwKsn4z_"
                 };
                 double lat = South ? Latitude * -1 : Latitude;
-                rq.Point = new Coordinate(lat, Longitude);
+                double lon = West ? Longitude * -1 : Longitude;
+                Console.WriteLine("{0}, {1} - Equipment {2}, Sequence {3}", lat, lon,
+                    Numb.HasValue ? Numb.Value.ToString() : "N/A",
+                    Sequence.HasValue ? Sequence.Value.ToString() : "N/A");
+                rq.Point = new Coordinate(lat, lon);
                 var response = await rq.Execute();
                 if (response.StatusCode == 200)
                 {
                     Console.WriteLine("Success:");
-                    foreach (var rs in response.ResourceSets)
+                    var loc = response.ResourceSets[0].Resources[0] as Location;
+                    var add = new Address
                     {
-                        foreach (var r in rs.Resources)
+                        addressLine = loc.Address.AddressLine,
+                        adminDistrict = loc.Address.AdminDistrict,
+                        countryRegion = loc.Address.CountryRegion,
+                        formattedAddress = loc.Address.FormattedAddress,
+                        locality = loc.Address.Locality,
+                        postalCode = loc.Address.PostalCode,
+                        latitude = lat,
+                        longitude = lon,
+                        timestamp = DateTime.Now
+                    };
+                    var text = JsonSerializer.Serialize(add);
+                    Console.WriteLine(text);
+                    if (Numb.HasValue)
+                    {
+                        try
                         {
-                            var loc = r as Location;
-                            Console.WriteLine(loc.Address.FormattedAddress);
+                            if (Sequence.HasValue)
+                            {
+                                var mo = new GT1701<Celin.AIS.MoUpdateText>(Numb.Value.ToString(), Sequence.Value, text);
+                                var moResp = await E1.RequestAsync(mo.Request);
+                                Console.WriteLine(moResp.updateTextStatus);
+                            }
+                            else
+                            {
+                                var mo = new GT1701<Celin.AIS.MoAddText>(Numb.Value.ToString(), NAME, text);
+                                var moResp = await E1.RequestAsync(mo.Request);
+                                Console.WriteLine(moResp.addTextStatus);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("ERROR: {0}", e.Message);
                         }
                     }
                 }
@@ -76,6 +116,10 @@ namespace Test
                 {
                     Console.WriteLine(response.StatusDescription);
                 }
+            }
+            public BingMap(Celin.AIS.Server e1)
+            {
+                E1 = e1;
             }
         }
         [Command("azta", Description = "Azure Text Attachments")]
